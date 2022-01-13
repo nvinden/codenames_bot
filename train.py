@@ -13,7 +13,7 @@ OPTIM_BATCH_SIZE = 8
 batch_size = 6
 starting_epsilon = 0.9
 ending_epsilon = 0.05
-n_episodes = 30000
+n_episodes = 300
 GAMMA = 0.8
 TARGET_UPDATE = 10
 
