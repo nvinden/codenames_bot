@@ -69,7 +69,7 @@ def epsilon_greedy_reciever(q_reciever, sender_choices, board, epsilon = 0.9):
       
 def reward(boards, actions):
     new_boards = copy.deepcopy(boards)
-    rewards = torch.zeros((len(boards)), device)
+    rewards = torch.zeros((len(boards)), device = device)
 
     for i, (board, action) in enumerate(zip(new_boards, actions)):
         curr_reward = 0.0
