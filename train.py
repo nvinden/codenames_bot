@@ -48,7 +48,7 @@ def train():
     memory = ReplayMemory(1000)
 
     for i_episode in range(n_episodes):
-        print_detail_iteration = i_episode % 100 == 0 and i_episode != 0
+        print_detail_iteration = i_episode % 10 == 0 and i_episode != 0
         policy_target_switch = i_episode % TARGET_UPDATE == 0 and i_episode != 0
 
         hit_rate = math.sqrt(1 - epsilon)
