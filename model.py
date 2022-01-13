@@ -17,6 +17,9 @@ class SenderModel(torch.nn.Module):
         self.max_length = 115
         self.n_sender_choices = n_sender_choices
 
+        if not os.path.isdir("data/created"):
+            os.mkdir("data/created")
+
         #Creating List of All Word Choices
         precompiled_path = os.path.join("data", "created", f"wiki_word_corpus_{n_sender_choices}.txt")
         if not os.path.isfile(precompiled_path):
