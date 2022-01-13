@@ -167,7 +167,7 @@ def optimize_model(**kwargs):
     receiver_final_mask = torch.tensor([bool(game_over(game)) for game in batch.next_state])
     receiver_reward_batch = torch.stack(batch.reward)
 
-    receiver_state_action_values_final = torch.zeros(OPTIM_BATCH_SIZE)
+    receiver_state_action_values_final = torch.zeros(OPTIM_BATCH_SIZE, device = device)
     receiver_state_action_values = policy_receiver(batch.state, state_receiver_inputs)[0] #q (batch, 25, 1)
     for i, (action_list, q) in enumerate(zip(batch.receiver_action, receiver_state_action_values)):
         receiver_state_action_values_final[i] = q[action_list].mean()
