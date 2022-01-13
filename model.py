@@ -141,20 +141,13 @@ class RecieverModel(torch.nn.Module):
         shared_representation = logits.view(logits.shape[0], -1)
 
         # shared state value
-        state_value = self.shared_representation_net(shared_representation).squeeze(1).to(device)
+        #state_value = self.shared_representation_net(shared_representation).squeeze(1).to(device)
 
         # generating all action-dependednt q values
-        adv_dim = torch.zeros([len(n_tiles_list), 25])
+        q_values = torch.zeros([len(n_tiles_list), 25])
         for i, action_net in enumerate(self.action_net_list):
             curr_q = action_net(shared_representation).squeeze(1)
-            adv_dim[:, i] = curr_q
-
-        # the special addition
-        q_values = torch.zeros([len(n_tiles_list), 25])
-        mean_action_value = torch.mean(adv_dim, dim = 1)
-        for i in range(25):
-            action_dim = adv_dim[:, i]
-            q_values[:, i] = state_value + action_dim - mean_action_value
+            q_values[:, i] = curr_q
 
         # creating list of selected actions via search
         action_list = list()
