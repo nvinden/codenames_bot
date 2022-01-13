@@ -9,7 +9,7 @@ from torch.utils.tensorboard import SummaryWriter
 import math
 import sys
 
-OPTIM_BATCH_SIZE = 32
+OPTIM_BATCH_SIZE = 8
 batch_size = 6
 starting_epsilon = 0.9
 ending_epsilon = 0.05
