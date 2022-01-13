@@ -21,7 +21,7 @@ class SenderModel(torch.nn.Module):
         precompiled_path = os.path.join("data", "created", f"wiki_word_corpus_{n_sender_choices}.txt")
         if not os.path.isfile(precompiled_path):
             sender_choices_file_path = os.path.join("data", "base", "wiki_word_corpus.txt")
-            df = pd.read_csv(sender_choices_file_path, sep = ' ', on_bad_lines='skip', names = ["word", "occurances"])
+            df = pd.read_csv(sender_choices_file_path, sep = ' ', names = ["word", "occurances"])
             df = df.head(n_sender_choices)
             df = df.drop(columns = ["occurances", ])
             self.sender_choices = df['word'].tolist()
