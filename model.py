@@ -10,6 +10,8 @@ import os
 from transformers import GPT2Tokenizer, GPT2ForSequenceClassification, GPT2Model, GPT2Config
 from data import board2stringsender, board2stringreciever, create_uncategorized_board
 
+device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
+
 class SenderModel(torch.nn.Module):
     def __init__(self, n_sender_choices = 10000):
         super(SenderModel, self).__init__()
@@ -68,8 +70,8 @@ class SenderModel(torch.nn.Module):
         board_str_list = [board2stringsender(board) for board in board_list]
         tokens_list = [self.tokenizer("<|startoftext|> " + board_str + "<|endoftext|>", truncation=True, max_length=self.max_length, padding="max_length") for board_str in board_str_list]
 
-        b_input_ids = [torch.tensor(tokens['input_ids'], dtype = torch.long).unsqueeze(0) for tokens in tokens_list]
-        b_masks = [torch.tensor(tokens['attention_mask'], dtype = torch.long).unsqueeze(0) for tokens in tokens_list]
+        b_input_ids = [torch.tensor(tokens['input_ids'], dtype = torch.long, device = device).unsqueeze(0) for tokens in tokens_list]
+        b_masks = [torch.tensor(tokens['attention_mask'], dtype = torch.long, device = device).unsqueeze(0) for tokens in tokens_list]
 
         b_input_ids = torch.cat(b_input_ids, dim = 0)
         b_masks = torch.cat(b_masks, dim = 0)
@@ -128,8 +130,8 @@ class RecieverModel(torch.nn.Module):
         board_str_list = [board2stringreciever(board, sender_input['word'], sender_input['num']) for board, sender_input in zip(uncat_board_list, sender_input_list)]
         tokens_list = [self.tokenizer("<|startoftext|> " + board_str + "<|endoftext|>", truncation=True, max_length=self.max_length, padding="max_length") for board_str in board_str_list]
 
-        b_input_ids = [torch.tensor(tokens['input_ids'], dtype = torch.long).unsqueeze(0) for tokens in tokens_list]
-        b_masks = [torch.tensor(tokens['attention_mask'], dtype = torch.long).unsqueeze(0) for tokens in tokens_list]
+        b_input_ids = [torch.tensor(tokens['input_ids'], dtype = torch.long, device = device).unsqueeze(0) for tokens in tokens_list]
+        b_masks = [torch.tensor(tokens['attention_mask'], dtype = torch.long, device = device).unsqueeze(0) for tokens in tokens_list]
 
         b_input_ids = torch.cat(b_input_ids, dim = 0)
         b_masks = torch.cat(b_masks, dim = 0)
