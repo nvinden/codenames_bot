@@ -104,7 +104,7 @@ class RecieverModel(torch.nn.Module):
 
         # creating linear units
         self.shared_representation_net = nn.Linear(self.max_length * self.configuration.hidden_size, 1)
-        self.action_net_list = [nn.Linear(self.max_length * self.configuration.hidden_size, 1) for i in range(25)]
+        self.action_net_list = [nn.Linear(self.max_length * self.configuration.hidden_size, 1).to(device) for i in range(25)]
 
     def create_reciever_input_string(self, board_list, sender_input):
         uncat_board = create_uncategorized_board(board_list)
@@ -141,7 +141,7 @@ class RecieverModel(torch.nn.Module):
         shared_representation = logits.view(logits.shape[0], -1)
 
         # shared state value
-        state_value = self.shared_representation_net(shared_representation).squeeze(1)
+        state_value = self.shared_representation_net(shared_representation).squeeze(1).to(device)
 
         # generating all action-dependednt q values
         adv_dim = torch.zeros([len(n_tiles_list), 25])
