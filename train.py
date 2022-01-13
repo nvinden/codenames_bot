@@ -157,7 +157,7 @@ def optimize_model(**kwargs):
     criterion = nn.SmoothL1Loss()
     loss = criterion(sender_state_action_values, sender_expected_state_action_values)
 
-    writer.add_scalar("Loss/Sender", loss, epoch_number)
+    writer.add_scalar("Loss/Sender", loss.item(), epoch_number)
 
     optim_sender.zero_grad()
     loss.backward()
@@ -173,7 +173,7 @@ def optimize_model(**kwargs):
         receiver_state_action_values_final[i] = q[action_list].mean()
 
     receiver_q_values = target_receiver(batch.next_state, next_state_receiver_inputs)[0]
-    receiver_q_values_avg_top_num = torch.zeros(OPTIM_BATCH_SIZE)
+    receiver_q_values_avg_top_num = torch.zeros(OPTIM_BATCH_SIZE, device = device)
     for i, q_batch in enumerate(receiver_q_values):
         num = next_state_receiver_inputs[i]['num']
         temp = torch.topk(q_batch, num).values
@@ -183,7 +183,7 @@ def optimize_model(**kwargs):
 
     loss = criterion(receiver_y, receiver_state_action_values_final)
 
-    writer.add_scalar("Loss/Receiver", loss, epoch_number)
+    writer.add_scalar("Loss/Receiver", loss.item(), epoch_number)
 
     optim_receiver.zero_grad()
     loss.backward()
