@@ -137,7 +137,7 @@ class RecieverModel(torch.nn.Module):
         b_masks = torch.cat(b_masks, dim = 0)
 
         out = self.gpt2(b_input_ids, attention_mask = b_masks)
-        logits = out['last_hidden_state'].squeeze(-1)
+        logits = out['last_hidden_state'].squeeze(-1).to(device)
         shared_representation = logits.view(logits.shape[0], -1)
 
         # shared state value
