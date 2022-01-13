@@ -9,8 +9,8 @@ from torch.utils.tensorboard import SummaryWriter
 import math
 import sys
 
-OPTIM_BATCH_SIZE = 128
-batch_size = 2
+OPTIM_BATCH_SIZE = 32
+batch_size = 6
 starting_epsilon = 0.9
 ending_epsilon = 0.05
 n_episodes = 30000
@@ -29,8 +29,6 @@ def train():
     # creating models
     policy_sender = SenderModel(n_sender_choices = 10000).to(device)
     policy_receiver = RecieverModel().to(device)
-
-    print(sys.getsizeof(policy_receiver))
 
     target_sender = SenderModel().to(device)
     target_receiver = RecieverModel().to(device)
