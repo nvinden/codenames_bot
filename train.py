@@ -120,6 +120,7 @@ def train():
         epsilon -= epsilon_stepdown
 
         if policy_target_switch:
+            print("<POLICY-TARGET SWITCH>")
             target_sender.load_state_dict(policy_sender.state_dict())
             target_receiver.load_state_dict(policy_receiver.state_dict())
         
@@ -188,9 +189,6 @@ def optimize_model(**kwargs):
     writer.add_scalar("Loss/Receiver", loss.item(), epoch_number)
 
     rec_loss = loss.item()
-
-    if epoch_number % 10 == 0:
-        print(f"Sen Loss {sender_loss}\nRec Loss {rec_loss}")
 
     optim_receiver.zero_grad()
     loss.backward()
