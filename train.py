@@ -7,9 +7,10 @@ import torch.nn as nn
 from torch.utils.tensorboard import SummaryWriter
 
 import math
+import sys
 
 OPTIM_BATCH_SIZE = 128
-batch_size = 16
+batch_size = 2
 starting_epsilon = 0.9
 ending_epsilon = 0.05
 n_episodes = 30000
@@ -28,6 +29,8 @@ def train():
     # creating models
     policy_sender = SenderModel(n_sender_choices = 10000).to(device)
     policy_receiver = RecieverModel().to(device)
+
+    print(sys.getsizeof(policy_receiver))
 
     target_sender = SenderModel().to(device)
     target_receiver = RecieverModel().to(device)
@@ -53,7 +56,7 @@ def train():
         hit_rate = math.sqrt(1 - epsilon)
 
         starting_colour = 'red' if red_start else 'blue'
-        boards = board_manager.sample_batch(5, starting_turn = starting_colour)
+        boards = board_manager.sample_batch(batch_size, starting_turn = starting_colour)
         red_turn = red_start
 
         turn_number = 1
