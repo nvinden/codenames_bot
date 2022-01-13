@@ -159,6 +159,8 @@ def optimize_model(**kwargs):
 
     writer.add_scalar("Loss/Sender", loss.item(), epoch_number)
 
+    sender_loss = loss.item()
+
     optim_sender.zero_grad()
     loss.backward()
     optim_sender.step()
@@ -184,6 +186,11 @@ def optimize_model(**kwargs):
     loss = criterion(receiver_y, receiver_state_action_values_final)
 
     writer.add_scalar("Loss/Receiver", loss.item(), epoch_number)
+
+    rec_loss = loss.item()
+
+    if epoch_number % 10 == 0:
+        print(f"Sen Loss {sender_loss}\nRec Loss {rec_loss}")
 
     optim_receiver.zero_grad()
     loss.backward()
