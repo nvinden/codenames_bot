@@ -66,13 +66,43 @@ def epsilon_greedy_reciever(q_reciever, sender_choices, board, epsilon = 0.9):
             reciever_output_list.append(curr_selections)
         
     return reciever_output_list
-      
+
+def get_expected_reward(board, number):
+    r = len(board['red'])
+    bl = len(board['blue'])
+    ne = len(board['neutral'])
+    bo = len(board['bomb'])
+
+    def B(N):
+        return (0.2 * (r - N) - 0.2 * bl - 1.0 * bo) / (r - N + bl + ne + bo)
+
+    def P(N):
+        if N == 0:
+            return 1
+        
+        product = 1
+        for n in range(N):
+            product *= (r - n) / (r - n + bl + ne + bo)
+
+        return product
+
+
+    sum = 0
+    for i in range(number):
+        B_val = B(i)
+        P_val = P(i)
+        sum += B_val * P_val
+
+    return sum
+
+   
 def reward(boards, actions):
     new_boards = copy.deepcopy(boards)
     rewards = torch.zeros((len(boards)), device = device)
 
     for i, (board, action) in enumerate(zip(new_boards, actions)):
-        curr_reward = 0.0
+        curr_reward = 0
+        expected_reward = get_expected_reward(board, len(action))
         for word in action:
             if word in board['red']:
                 curr_reward += 0.2
@@ -90,7 +120,8 @@ def reward(boards, actions):
                 break
             else:
                 raise Exception("A word the reciever has chosen is not availble on the board")
-        rewards[i] = curr_reward
+
+        rewards[i] = curr_reward - expected_reward
     
     return new_boards, rewards
     
