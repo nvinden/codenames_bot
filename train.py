@@ -8,6 +8,7 @@ from torch.utils.tensorboard import SummaryWriter
 
 import math
 import sys
+import os
 
 OPTIM_BATCH_SIZE = 8
 batch_size = 6
@@ -48,7 +49,7 @@ def train():
     memory = ReplayMemory(1000)
 
     for i_episode in range(n_episodes):
-        print_detail_iteration = i_episode % 10 == 0 and i_episode != 0
+        print_detail_iteration = i_episode % 100 == 0 and i_episode != 0
         policy_target_switch = i_episode % TARGET_UPDATE == 0 and i_episode != 0
 
         hit_rate = math.sqrt(1 - epsilon)
@@ -124,7 +125,7 @@ def train():
             target_sender.load_state_dict(policy_sender.state_dict())
             target_receiver.load_state_dict(policy_receiver.state_dict())
 
-        if True:#i_episode % 1000 == 0 and i_episode != 0:
+        if i_episode % 1000 == 0 and i_episode != 0:
             torch.save({
                 "sender": target_sender.state_dict(),
                 "reciever": target_receiver.state_dict()

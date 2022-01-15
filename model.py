@@ -38,13 +38,17 @@ class SenderModel(torch.nn.Module):
                 self.sender_choices = pickle.load(fp)
 
         #Initializing GPT2 Elements
-        self.configuration = GPT2Config.from_pretrained('gpt2', output_hidden_states=False)
+        self.configuration = GPT2Config.from_pretrained(os.path.join("data/base", "config.json"), output_hidden_states=False)
+        #torch.save(self.configuration, os.path.join("data/base", "s_config.pt"))
+
         self.configuration.num_labels = n_sender_choices * 9
 
-        self.tokenizer = GPT2Tokenizer.from_pretrained("gpt2", bos_token='<|startoftext|>', eos_token='<|endoftext|>', pad_token='<|pad|>', add_special_tokens = False)
+        self.tokenizer = GPT2Tokenizer.from_pretrained("data/base", bos_token='<|startoftext|>', eos_token='<|endoftext|>', pad_token='<|pad|>', add_special_tokens = False)
+        #torch.save(self.tokenizer, os.path.join("data/base", "s_tok.pt"))
         self.tokenizer.add_special_tokens({"additional_special_tokens": ["<RED>", "<BLUE>", "<NEUTRAL>", "<BOMB>"]})
 
-        self.gpt2 = GPT2ForSequenceClassification.from_pretrained('gpt2', config=self.configuration)
+        self.gpt2 = GPT2ForSequenceClassification.from_pretrained(os.path.join("data/base", "pytorch_model.bin"), config=self.configuration)
+        #torch.save(self.gpt2, os.path.join("data/base", "s_gpt2.pt"))
         self.gpt2.train()
         self.gpt2.resize_token_embeddings(len(self.tokenizer))
         self.gpt2.config.pad_token_id = self.tokenizer.pad_token_id
@@ -91,13 +95,16 @@ class RecieverModel(torch.nn.Module):
         self.n_sender_choices = n_sender_choices
 
         # initializing GPT2 elements
-        self.configuration = GPT2Config.from_pretrained('gpt2', output_hidden_states=False)
+        self.configuration = GPT2Config.from_pretrained(os.path.join("data/base", "config.json"), output_hidden_states=False)
+        #torch.save(self.configuration, os.path.join("data/base", "r_config.pt"))
         self.configuration.num_labels = 1
 
-        self.tokenizer = GPT2Tokenizer.from_pretrained("gpt2", bos_token='<|startoftext|>', eos_token='<|endoftext|>', pad_token='<|pad|>', add_special_tokens = False)
+        self.tokenizer = GPT2Tokenizer.from_pretrained("data/base", bos_token='<|startoftext|>', eos_token='<|endoftext|>', pad_token='<|pad|>', add_special_tokens = False)
+        #torch.save(self.tokenizer, os.path.join("data/base", "r_tok.pt"))
         self.tokenizer.add_special_tokens({"additional_special_tokens": ["<HINT>", "<NUMBER>", "<BOARD>", "<END>"]})
 
-        self.gpt2 = GPT2Model.from_pretrained('gpt2', config=self.configuration)
+        self.gpt2 = GPT2Model.from_pretrained(os.path.join("data/base", "pytorch_model.bin"), config=self.configuration)
+        #torch.save(self.gpt2, os.path.join("data/base", "r_gpt2.pt"))
         self.gpt2.train()
         self.gpt2.resize_token_embeddings(len(self.tokenizer))
         self.gpt2.config.pad_token_id = self.tokenizer.pad_token_id
